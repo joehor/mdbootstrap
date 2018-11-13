@@ -17,16 +17,19 @@
       </thead>
       <tbody #row>
         <tr mdbTableCol (rowCreated)="onRowCreate($event)" (rowRemoved)="onRowRemove($event)"  *ngFor="let el of elements">
-          <td *ngFor="let head of headElements" [ngClass]="{'alr':alignText(el[head])}">{{ el[head] }}</td>
+          <td *ngFor="let head of headElements" [ngClass]="{'alr':isNumber(el[head])}">
+            <span *ngIf="!isNumber(el[head])"> {{ el[head] }} </span>
+            <span *ngIf="isNumber(el[head])"> {{ el[head] | currency:'BRL' }} </span>
+          </td>
         </tr>
       </tbody>
       <tfoot class="grey lighten-5 w-100">
 
         <tr>
-          <td [colSpan]="(headElementsCols)">
-            <mdb-table-pagination 
-              paginationAlign="" 
-              [searchDataSource]="elements" 
+          <td [colSpan]="(lastItemIndex)">
+            <mdb-table-pagination
+              paginationAlign=""
+              [searchDataSource]="elements"
               (nextPageClick)="onNextPageClick($event)"
               (previousPageClick)="onPreviousPageClick($event)">
             </mdb-table-pagination>

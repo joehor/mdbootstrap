@@ -1,0 +1,4 @@
+1. Ajustar a busca (tabela-list).
+   -
+2. Ajustar a paginação (tabela-list).
+   - 

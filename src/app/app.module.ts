@@ -3,6 +3,7 @@ import { NgModule, NO_ERRORS_SCHEMA  } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 // bootstrap
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
@@ -21,6 +22,7 @@ import { LinhasListComponent } from './linhas-list/linhas-list.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule, FormsModule,
     NavbarModule, WavesModule, ButtonsModule,
     HttpClientModule,
     MDBBootstrapModule.forRoot()

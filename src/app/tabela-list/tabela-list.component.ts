@@ -1,4 +1,4 @@
-import { element } from 'protractor';
+// import { element } from 'protractor';
 import { Component, OnInit, ElementRef, HostListener, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MdbTableDirective, MdbTablePaginationComponent, MdbTableService } from 'angular-bootstrap-md';
 import { TabelaListService } from './tabela-list.service';
@@ -16,9 +16,7 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   @ViewChild('row') row: ElementRef;
 
   elements: any = [];
-  // headElements = ['ID', 'First', 'Last', 'Handle'];
   headElements;
-  headElementsCols = 0;
 
   searchText: string;
   previous: string;
@@ -37,24 +35,20 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   ngOnInit() {
-
+    console.log('ngOnInit');
     this.tabelaListService.getTabela(1)
       .subscribe(res => {
         this.elements = res;
         this.headElements = Object.keys(res[0]);
-        this.headElementsCols = this.headElements.length;
-      });
-/*
-    for (let i = 1; i <= 20; i++) {
-      this.elements.push({ id: i.toString(), first: 'Wpis ' + i, last: 'Last ' + i, handle: 'Handle ' + i });
-    }
-*/
-    this.tableService.setDataSource(this.elements);
-    this.elements = this.tableService.getDataSource();
-    this.previous = this.tableService.getDataSource();
+
+        this.tableService.setDataSource(this.elements);
+        this.elements = this.tableService.getDataSource();
+        this.previous = this.tableService.getDataSource();
+    });
   }
 
   ngAfterViewInit() {
+    console.log('ngAfterViewInit');
     this.mdbPagination.setMaxVisibleItemsNumberTo(3);
     this.firstItemIndex = this.mdbPagination.firstItemIndex;
     this.lastItemIndex = this.mdbPagination.lastItemIndex;
@@ -66,11 +60,17 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
 
   addNewRow() {
     // tslint:disable-next-line:max-line-length
-    this.tableService.addRow({ id: this.elements.length.toString(), first: 'Wpis ' + this.elements.length, last: 'Last ' + this.elements.length, handle: 'Handle ' + this.elements.length });
+    console.log('addNewRow');
+    this.tableService.addRow({
+      id: this.elements.length.toString(),
+      first: 'Wpis ' + this.elements.length,
+      last: 'Last ' + this.elements.length,
+      handle: 'Handle ' + this.elements.length });
     this.emitDataSourceChange();
   }
 
   addNewRowAfter() {
+    console.log('addNewRowAfter');
     this.tableService.addRowAfter(1, { id: '2', first: 'Nowy', last: 'Row', handle: 'Kopytkowy' });
     this.tableService.getDataSource().forEach((el, index) => {
       el.id = (index + 1).toString();
@@ -79,6 +79,7 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   removeLastRow() {
+    console.log('removeLastRow');
     this.tableService.removeLastRow();
     this.emitDataSourceChange();
     this.tableService.rowRemoved().subscribe((data) => {
@@ -87,6 +88,7 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   removeRow() {
+    console.log('removeRow');
     this.tableService.removeRow(1);
     this.tableService.getDataSource().forEach((el, index) => {
       el.id = (index + 1).toString();
@@ -98,30 +100,36 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   emitDataSourceChange() {
+    console.log('emitDataSourceChange');
     this.tableService.dataSourceChange().subscribe((data: any) => {
       console.log(data);
     });
   }
 
   onNextPageClick(data: any) {
+    console.log('onNextPageClick');
     this.firstItemIndex = data.first;
     this.lastItemIndex = data.last;
   }
 
   onPreviousPageClick(data: any) {
+    console.log('onPreviousPageClick');
     this.firstItemIndex = data.first;
     this.lastItemIndex = data.last;
   }
 
   searchItems() {
+    console.log('searchItems');
     const prev = this.tableService.getDataSource();
 
     if (!this.searchText) {
+      console.log('Not searchText');
       this.tableService.setDataSource(this.previous);
       this.elements = this.tableService.getDataSource();
     }
 
     if (this.searchText) {
+      console.log('searchText');
       this.elements = this.tableService.searchLocalDataBy(this.searchText);
       this.tableService.setDataSource(prev);
     }
@@ -138,19 +146,15 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   onRowCreate(e) {
-    //
+    console.log('onRowCreate');
   }
 
   onRowRemove(e) {
-    //
+    console.log('onRowRemove');
   }
 
-  alignText(val) {
-    if (isNaN(parseFloat(val))) {
-      return '';
-    } else {
-      return 'alr';
-    }
+  isNumber(val): boolean {
+    return ! isNaN (val - 0) && val !== null && val !== '' && val !== false;
   }
 
 }
