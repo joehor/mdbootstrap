@@ -1,5 +1,7 @@
+import { element } from 'protractor';
 import { Component, OnInit, ElementRef, HostListener, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MdbTableDirective, MdbTablePaginationComponent, MdbTableService } from 'angular-bootstrap-md';
+import { TabelaListService } from './tabela-list.service';
 
 @Component({
   selector: 'app-tabela-list',
@@ -14,7 +16,9 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   @ViewChild('row') row: ElementRef;
 
   elements: any = [];
-  headElements = ['ID', 'First', 'Last', 'Handle'];
+  // headElements = ['ID', 'First', 'Last', 'Handle'];
+  headElements;
+  headElementsCols = 0;
 
   searchText: string;
   previous: string;
@@ -22,19 +26,29 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   firstItemIndex;
   lastItemIndex;
 
-  constructor(private tableService: MdbTableService,
-    private cdRef: ChangeDetectorRef) {
-  }
+  constructor(
+    private tableService: MdbTableService,
+    private cdRef: ChangeDetectorRef,
+    private tabelaListService: TabelaListService
+    ) { }
 
   @HostListener('input') oninput() {
     this.mdbPagination.searchText = this.searchText;
   }
 
   ngOnInit() {
+
+    this.tabelaListService.getTabela(1)
+      .subscribe(res => {
+        this.elements = res;
+        this.headElements = Object.keys(res[0]);
+        this.headElementsCols = this.headElements.length;
+      });
+/*
     for (let i = 1; i <= 20; i++) {
       this.elements.push({ id: i.toString(), first: 'Wpis ' + i, last: 'Last ' + i, handle: 'Handle ' + i });
     }
-
+*/
     this.tableService.setDataSource(this.elements);
     this.elements = this.tableService.getDataSource();
     this.previous = this.tableService.getDataSource();
@@ -129,6 +143,14 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
 
   onRowRemove(e) {
     //
+  }
+
+  alignText(val) {
+    if (isNaN(parseFloat(val))) {
+      return '';
+    } else {
+      return 'alr';
+    }
   }
 
 }

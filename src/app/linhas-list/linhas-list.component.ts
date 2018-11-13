@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LinhasListService } from './../linhas-list/linhas-list.service';
 
 @Component({
   selector: 'app-linhas-list',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LinhasListComponent implements OnInit {
 
-  constructor() { }
+  linhas;
+
+  constructor(private linhasListService: LinhasListService) { }
 
   ngOnInit() {
+    this.getLinhas();
+  }
+
+  getLinhas() {
+    this.linhasListService.getLinhas()
+      .subscribe(res => {
+        this.linhas = res;
+      });
   }
 
 }

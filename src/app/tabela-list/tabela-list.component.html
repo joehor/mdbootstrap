@@ -11,24 +11,25 @@
       <thead class="sticky-top">
         <tr>
           <th *ngFor="let head of headElements; let i = index" [mdbTableSort]="elements" [sortBy]="headElements[i]"
-            scope="col">{{head}} <mdb-icon icon="sort"></mdb-icon>
+            scope="col">{{ head }} <mdb-icon icon="sort"></mdb-icon>
           </th>
         </tr>
       </thead>
       <tbody #row>
-        <tr mdbTableCol (rowCreated)="onRowCreate($event)" (rowRemoved)="onRowRemove($event)" *ngFor="let el of elements; let i = index">
-          <th *ngIf="i+1 >= firstItemIndex && i < lastItemIndex" scope="row">{{el.id}}</th>
-          <td *ngIf="i+1 >= firstItemIndex && i < lastItemIndex" class="red-text">{{el.first}}</td>
-          <td *ngIf="i+1 >= firstItemIndex && i < lastItemIndex">{{el.last}}</td>
-          <td *ngIf="i+1 >= firstItemIndex && i < lastItemIndex">{{el.handle}}</td>
+        <tr mdbTableCol (rowCreated)="onRowCreate($event)" (rowRemoved)="onRowRemove($event)"  *ngFor="let el of elements">
+          <td *ngFor="let head of headElements" [ngClass]="{'alr':alignText(el[head])}">{{ el[head] }}</td>
         </tr>
       </tbody>
       <tfoot class="grey lighten-5 w-100">
 
         <tr>
-          <td colspan="4">
-            <mdb-table-pagination paginationAlign="" [searchDataSource]="elements" (nextPageClick)="onNextPageClick($event)"
-              (previousPageClick)="onPreviousPageClick($event)"></mdb-table-pagination>
+          <td [colSpan]="(headElementsCols)">
+            <mdb-table-pagination 
+              paginationAlign="" 
+              [searchDataSource]="elements" 
+              (nextPageClick)="onNextPageClick($event)"
+              (previousPageClick)="onPreviousPageClick($event)">
+            </mdb-table-pagination>
           </td>
         </tr>
 
@@ -37,3 +38,5 @@
 
   </div>
 </div>
+
+<!-- [ngClass]="{'alr':isNaN(parseFloat(el[head]))}" -->

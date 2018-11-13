@@ -1,3 +1,31 @@
-.col-sm {
-  margin-top: 10px;
+.card {
+  margin: 10px;
+  width: 20em;
+}
+
+.card p {
+  font-size: 18px;
+}
+
+mdb-card-footer {
+  text-align: center;
+}
+
+@media (max-width: 630px) {
+  .modal-sm {
+    max-width: 100%;
+  }
+  
+  .card {
+    width: 100%;
+  }
+  
+  .hrcard {
+    display: "inline-block";
+  }
+
+  mdb-card-img {
+    display: contents;
+  }
+  
 }
