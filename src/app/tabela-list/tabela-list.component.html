@@ -9,6 +9,9 @@
       <div class="md-form">
         <button class="btn -primary" (click)="getTabela(1)">Buscar produtos</button>
       </div>
+      <div class="md-form">
+        <button class="btn -primary" (click)="definePagina()">Atualiza paginas</button>
+      </div>
     </div>
     <table mdbTable stickyHeader="true" hover="true" striped="true" class="z-depth-1">
       <thead class="sticky-top">
@@ -19,8 +22,8 @@
         </tr>
       </thead>
       <tbody #row>
-        <tr mdbTableCol 
-          (rowCreated)="onRowCreate($event)" 
+        <tr mdbTableCol
+          (rowCreated)="onRowCreate($event)"
           (rowRemoved)="onRowRemove($event)"
           *ngFor="let el of elements; let i = index">
           <th *ngIf="i+1 >= firstItemIndex && i < lastItemIndex" scope="row">{{el.id}}</th>
@@ -30,17 +33,17 @@
         </tr>
       </tbody>
       <tfoot class="grey lighten-5 w-100">
-  
+
         <tr>
           <td [colSpan]="(headElements.length)">
             <mdb-table-pagination paginationAlign="" [searchDataSource]="elements" (nextPageClick)="onNextPageClick($event)"
               (previousPageClick)="onPreviousPageClick($event)"></mdb-table-pagination>
           </td>
         </tr>
-  
+
       </tfoot>
     </table>
-  
+
   </div>
 </div>
 

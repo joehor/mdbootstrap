@@ -12,12 +12,14 @@ import { NavbarModule, WavesModule, ButtonsModule } from 'angular-bootstrap-md';
 // meus componentes
 import { TabelaListComponent } from './tabela-list/tabela-list.component';
 import { LinhasListComponent } from './linhas-list/linhas-list.component';
+import { MeuPaginadorComponent } from './meu-paginador/meu-paginador.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TabelaListComponent,
-    LinhasListComponent
+    LinhasListComponent,
+    MeuPaginadorComponent
   ],
   imports: [
     BrowserModule,

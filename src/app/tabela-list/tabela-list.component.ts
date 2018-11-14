@@ -16,9 +16,8 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
   @ViewChild('row') row: ElementRef;
 
   elements: any = [];
-  headElements = [];
-  fim: any;
-  // headElements = ['id', 'codigo', 'descricao', 'preco'];
+  // headElements = [];
+  headElements = ['id', 'codigo', 'descricao', 'preco'];
 
   searchText: string;
   previous: string;
@@ -35,23 +34,25 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
     this.mdbPagination.searchText = this.searchText;
   }
 
-  ngOnInit() {
-    console.log('ngOnInit');
-    // this.fim = this.getTabela(1);
-    // this.getTabelaTeste();
+  async ngOnInit() {
+    console.log('ngOnInit INI');
+    await this.getTabela(1);
+    // await this.getTabelaTeste();
+    console.log('ngOnInit FIM');
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
     console.log('ngAfterViewInit');
-/*
-    this.mdbPagination.setMaxVisibleItemsNumberTo(3);
-    this.firstItemIndex = this.mdbPagination.firstItemIndex;
-    this.lastItemIndex = this.mdbPagination.lastItemIndex;
+    if (this.elements.length > 0) {
+      console.log('ngAfterViewInit - tem registros...');
+      this.mdbPagination.setMaxVisibleItemsNumberTo(3);
+      this.firstItemIndex = this.mdbPagination.firstItemIndex;
+      this.lastItemIndex = this.mdbPagination.lastItemIndex;
 
-    this.mdbPagination.calculateFirstItemIndex();
-    this.mdbPagination.calculateLastItemIndex();
-    this.cdRef.detectChanges();
-*/
+      this.mdbPagination.calculateFirstItemIndex();
+      this.mdbPagination.calculateLastItemIndex();
+      this.cdRef.detectChanges();
+    }
   }
 
   definePagina() {
@@ -65,12 +66,13 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
     this.cdRef.detectChanges();
   }
 
-  getTabela(id) {
+  async getTabela(id) {
     console.log('Inicio getTabela');
-    this.tabelaListService.getTabela(1)
+    for (let i = 1; i <= 1; i++) {
+      this.tabelaListService.getTabela(1)
       .subscribe(data => {
-        this.headElements = Object.keys(data[0]);
         this.elements = data;
+        this.headElements = Object.keys(this.elements[0]);
         this.tableService.setDataSource(this.elements);
         this.elements = this.tableService.getDataSource();
         this.previous = this.tableService.getDataSource();
@@ -78,27 +80,35 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
 
         this.definePagina();
       });
+    }
   }
 
   getTabelaTeste() {
+    console.log('getTabelaTeste INI');
     for (let i = 1; i <= 20; i++) {
-      this.elements.push({ id: i.toString(), first: 'Wpis ' + i, last: 'Last ' + i, handle: 'Handle ' + i });
+      this.elements.push({ id: i.toString(), codigo: 'codigo ' + i, descricao: 'descricao ' + i, preco: 'preco ' + i });
     }
 
     this.headElements = Object.keys(this.elements[0]);
     this.tableService.setDataSource(this.elements);
     this.elements = this.tableService.getDataSource();
     this.previous = this.tableService.getDataSource();
+    console.log('getTabelaTeste FIM');
   }
 
   addNewRow() {
     // tslint:disable-next-line:max-line-length
-    this.tableService.addRow({ id: this.elements.length.toString(), first: 'Wpis ' + this.elements.length, last: 'Last ' + this.elements.length, handle: 'Handle ' + this.elements.length });
+    console.log('addNewRow');
+    this.tableService.addRow({
+      id: this.elements.length.toString(),
+      first: 'Wpis ' + this.elements.length,
+      last: 'Last ' + this.elements.length,
+      handle: 'Handle ' + this.elements.length });
     this.emitDataSourceChange();
   }
 
   addNewRowAfter() {
-    this.tableService.addRowAfter(1, { id: '2', first: 'Nowy', last: 'Row', handle: 'Kopytkowy' });
+    this.tableService.addRowAfter(1, { id: '2', codigo: 'Nowy', last: 'Row', handle: 'Kopytkowy' });
     this.tableService.getDataSource().forEach((el, index) => {
       el.id = (index + 1).toString();
     });
