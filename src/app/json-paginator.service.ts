@@ -55,7 +55,12 @@ export class JsonPaginatorService {
     printLog() {
       console.log('paginaAtual: ' + this.paginaAtual);
       console.log('paginaTotal: ' + this.paginaTotal);
-    }
+    },
+
+    ordenar(ds, col, v) {
+      return ds.sort((a, b) => (a[col] > b[col]) ? 1 * v : ((b[col] > a[col]) ? -1 * v : 0));
+      // this.dataSource.data.sort((a, b) => (a[col] > b[col]) ? 1 : ((b[col] > a[col]) ? -1 : 0));
+    },
 
   };
 

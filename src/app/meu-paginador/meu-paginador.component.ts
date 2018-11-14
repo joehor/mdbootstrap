@@ -13,6 +13,7 @@ export class MeuPaginadorComponent implements OnInit {
   dataHead;
   dataPag;
   gotopag = 1;
+  orderVet = 1;
 
 
   constructor(
@@ -47,6 +48,19 @@ export class MeuPaginadorComponent implements OnInit {
     console.log('Slice...');
     this.dataPag = this.jsonPaginatorService.dataSource.getSlice(this.gotopag);
     console.log('dataPag: ' + this.dataPag);
+  }
+
+  tbhOrdenar(nomeCol) {
+    console.log('Ordenando...');
+    let vet;
+    if (this.orderVet === 1) {
+      vet = -1;
+    } else {
+      vet = 1;
+    }
+    this.orderVet = vet;
+    this.data = this.jsonPaginatorService.dataSource.ordenar(this.data, nomeCol, vet);
+    this.dataPag = this.data.slice(0, this.jsonPaginatorService.dataSource.linhasPorPagina);
   }
 
 }

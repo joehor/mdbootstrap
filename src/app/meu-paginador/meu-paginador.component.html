@@ -3,7 +3,8 @@
     <table mdbTable>
       <thead>
         <tr>
-          <th *ngFor="let head of dataHead" scope="col">{{head}} </th>
+          <th *ngFor="let head of dataHead" scope="col"
+            (click)="tbhOrdenar(head)">{{head}} </th>
         </tr>
       </thead>
       <tbody>
