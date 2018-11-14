@@ -1,3 +1,4 @@
+import { async } from '@angular/core/testing';
 // import { element } from 'protractor';
 import { Component, OnInit, ElementRef, HostListener, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MdbTableDirective, MdbTablePaginationComponent, MdbTableService } from 'angular-bootstrap-md';
@@ -8,15 +9,16 @@ import { TabelaListService } from './tabela-list.service';
   templateUrl: './tabela-list.component.html',
   styleUrls: ['./tabela-list.component.scss']
 })
-export class TabelaListComponent implements OnInit, AfterViewInit  {
-
+export class TabelaListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
   @ViewChild(MdbTablePaginationComponent) mdbPagination: MdbTablePaginationComponent;
   @ViewChild('row') row: ElementRef;
 
   elements: any = [];
-  headElements;
+  headElements = [];
+  fim: any;
+  // headElements = ['id', 'codigo', 'descricao', 'preco'];
 
   searchText: string;
   previous: string;
@@ -27,8 +29,7 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   constructor(
     private tableService: MdbTableService,
     private cdRef: ChangeDetectorRef,
-    private tabelaListService: TabelaListService
-    ) { }
+    private tabelaListService: TabelaListService) { }
 
   @HostListener('input') oninput() {
     this.mdbPagination.searchText = this.searchText;
@@ -36,19 +37,25 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
 
   ngOnInit() {
     console.log('ngOnInit');
-    this.tabelaListService.getTabela(1)
-      .subscribe(res => {
-        this.elements = res;
-        this.headElements = Object.keys(res[0]);
-
-        this.tableService.setDataSource(this.elements);
-        this.elements = this.tableService.getDataSource();
-        this.previous = this.tableService.getDataSource();
-    });
+    // this.fim = this.getTabela(1);
+    // this.getTabelaTeste();
   }
 
   ngAfterViewInit() {
     console.log('ngAfterViewInit');
+/*
+    this.mdbPagination.setMaxVisibleItemsNumberTo(3);
+    this.firstItemIndex = this.mdbPagination.firstItemIndex;
+    this.lastItemIndex = this.mdbPagination.lastItemIndex;
+
+    this.mdbPagination.calculateFirstItemIndex();
+    this.mdbPagination.calculateLastItemIndex();
+    this.cdRef.detectChanges();
+*/
+  }
+
+  definePagina() {
+    console.log('Define página');
     this.mdbPagination.setMaxVisibleItemsNumberTo(3);
     this.firstItemIndex = this.mdbPagination.firstItemIndex;
     this.lastItemIndex = this.mdbPagination.lastItemIndex;
@@ -58,19 +65,39 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
     this.cdRef.detectChanges();
   }
 
+  getTabela(id) {
+    console.log('Inicio getTabela');
+    this.tabelaListService.getTabela(1)
+      .subscribe(data => {
+        this.headElements = Object.keys(data[0]);
+        this.elements = data;
+        this.tableService.setDataSource(this.elements);
+        this.elements = this.tableService.getDataSource();
+        this.previous = this.tableService.getDataSource();
+        console.log('Fim getTabela');
+
+        this.definePagina();
+      });
+  }
+
+  getTabelaTeste() {
+    for (let i = 1; i <= 20; i++) {
+      this.elements.push({ id: i.toString(), first: 'Wpis ' + i, last: 'Last ' + i, handle: 'Handle ' + i });
+    }
+
+    this.headElements = Object.keys(this.elements[0]);
+    this.tableService.setDataSource(this.elements);
+    this.elements = this.tableService.getDataSource();
+    this.previous = this.tableService.getDataSource();
+  }
+
   addNewRow() {
     // tslint:disable-next-line:max-line-length
-    console.log('addNewRow');
-    this.tableService.addRow({
-      id: this.elements.length.toString(),
-      first: 'Wpis ' + this.elements.length,
-      last: 'Last ' + this.elements.length,
-      handle: 'Handle ' + this.elements.length });
+    this.tableService.addRow({ id: this.elements.length.toString(), first: 'Wpis ' + this.elements.length, last: 'Last ' + this.elements.length, handle: 'Handle ' + this.elements.length });
     this.emitDataSourceChange();
   }
 
   addNewRowAfter() {
-    console.log('addNewRowAfter');
     this.tableService.addRowAfter(1, { id: '2', first: 'Nowy', last: 'Row', handle: 'Kopytkowy' });
     this.tableService.getDataSource().forEach((el, index) => {
       el.id = (index + 1).toString();
@@ -79,7 +106,6 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   removeLastRow() {
-    console.log('removeLastRow');
     this.tableService.removeLastRow();
     this.emitDataSourceChange();
     this.tableService.rowRemoved().subscribe((data) => {
@@ -88,7 +114,6 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   removeRow() {
-    console.log('removeRow');
     this.tableService.removeRow(1);
     this.tableService.getDataSource().forEach((el, index) => {
       el.id = (index + 1).toString();
@@ -100,36 +125,30 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   emitDataSourceChange() {
-    console.log('emitDataSourceChange');
     this.tableService.dataSourceChange().subscribe((data: any) => {
       console.log(data);
     });
   }
 
   onNextPageClick(data: any) {
-    console.log('onNextPageClick');
     this.firstItemIndex = data.first;
     this.lastItemIndex = data.last;
   }
 
   onPreviousPageClick(data: any) {
-    console.log('onPreviousPageClick');
     this.firstItemIndex = data.first;
     this.lastItemIndex = data.last;
   }
 
   searchItems() {
-    console.log('searchItems');
     const prev = this.tableService.getDataSource();
 
     if (!this.searchText) {
-      console.log('Not searchText');
       this.tableService.setDataSource(this.previous);
       this.elements = this.tableService.getDataSource();
     }
 
     if (this.searchText) {
-      console.log('searchText');
       this.elements = this.tableService.searchLocalDataBy(this.searchText);
       this.tableService.setDataSource(prev);
     }
@@ -146,11 +165,11 @@ export class TabelaListComponent implements OnInit, AfterViewInit  {
   }
 
   onRowCreate(e) {
-    console.log('onRowCreate');
+
   }
 
   onRowRemove(e) {
-    console.log('onRowRemove');
+
   }
 
   isNumber(val): boolean {
