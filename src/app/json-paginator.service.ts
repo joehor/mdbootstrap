@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { typeWithParameters } from '@angular/compiler/src/render3/util';
+// import { typeWithParameters } from '@angular/compiler/src/render3/util';
+// import { AbstractControlStatus } from '@angular/forms/src/directives/ng_control_status';
 
 @Injectable({
   providedIn: 'root'
@@ -29,27 +30,24 @@ export class JsonPaginatorService {
     },
 
     getSlice: (pag) => {
-      this.dataSource.printLog();
       this.dataSource.paginaAtual = pag;
       return this.dataSource.data.slice((pag - 1) * this.dataSource.linhasPorPagina, pag * this.dataSource.linhasPorPagina);
     },
 
     goNext: () => {
-      this.dataSource.paginaAtual++;
-      if (this.dataSource.paginaAtual > this.dataSource.paginaTotal) {
-        this.dataSource.paginaAtual--;
+      let page = this.dataSource.paginaAtual + 1;
+      if (page > this.dataSource.paginaTotal) {
+        page--;
       }
-      this.dataSource.printLog();
-      return this.dataSource.getSlice(this.dataSource.paginaAtual);
+      return this.dataSource.getSlice(page);
     },
 
     goPrior: () => {
-      this.dataSource.paginaAtual--;
+      let page = this.dataSource.paginaAtual - 1;
       if (this.dataSource.paginaAtual < 1) {
-        this.dataSource.paginaAtual++;
+        page++;
        }
-       this.dataSource.printLog();
-       return this.dataSource.getSlice(this.dataSource.paginaAtual);
+       return this.dataSource.getSlice(page);
     },
 
     printLog() {
@@ -59,8 +57,35 @@ export class JsonPaginatorService {
 
     ordenar(ds, col, v) {
       return ds.sort((a, b) => (a[col] > b[col]) ? 1 * v : ((b[col] > a[col]) ? -1 * v : 0));
-      // this.dataSource.data.sort((a, b) => (a[col] > b[col]) ? 1 : ((b[col] > a[col]) ? -1 : 0));
     },
+
+    encontrar(text, colunas) {
+      let aCols = new Array(0);
+
+      if (colunas === '') {
+        if (typeof(colunas) === 'string') {
+          aCols.push(colunas);
+        }
+      } else {
+        aCols = this.columnHeaders;
+      }
+
+      if (text) {
+        return this.data.filter(el => {
+          for (const k of aCols) {
+            // campos numéricos não tem função search, nem convertendo para string ...
+            if (typeof(el[k]) === 'string') {
+              if (el[k].toLowerCase().search(text.toLowerCase()) > -1) {
+                return true;
+              }
+            }
+          }
+        })
+        .splice(0, this.linhasPorPagina);
+      } else {
+        return this.data.splice(0, this.linhasPorPagina);
+      }
+    }
 
   };
 

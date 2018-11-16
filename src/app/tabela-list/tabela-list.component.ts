@@ -1,4 +1,3 @@
-import { async } from '@angular/core/testing';
 // import { element } from 'protractor';
 import { Component, OnInit, ElementRef, HostListener, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MdbTableDirective, MdbTablePaginationComponent, MdbTableService } from 'angular-bootstrap-md';
@@ -34,14 +33,14 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
     this.mdbPagination.searchText = this.searchText;
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     console.log('ngOnInit INI');
-    await this.getTabela(1);
-    // await this.getTabelaTeste();
+    // this.getTabela(1);
+    this.getTabelaTeste();
     console.log('ngOnInit FIM');
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
     console.log('ngAfterViewInit');
     if (this.elements.length > 0) {
       console.log('ngAfterViewInit - tem registros...');
@@ -51,7 +50,7 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
 
       this.mdbPagination.calculateFirstItemIndex();
       this.mdbPagination.calculateLastItemIndex();
-      this.cdRef.detectChanges();
+      // this.cdRef.detectChanges();
     }
   }
 
@@ -66,11 +65,12 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
     this.cdRef.detectChanges();
   }
 
-  async getTabela(id) {
+  getTabela(id) {
     console.log('Inicio getTabela');
     for (let i = 1; i <= 1; i++) {
       this.tabelaListService.getTabela(1)
       .subscribe(data => {
+        console.log('result getTabela: ' + JSON.stringify(data));
         this.elements = data;
         this.headElements = Object.keys(this.elements[0]);
         this.tableService.setDataSource(this.elements);
@@ -85,7 +85,8 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
 
   getTabelaTeste() {
     console.log('getTabelaTeste INI');
-    for (let i = 1; i <= 20; i++) {
+    const rows = this.elements.length + 1;
+    for (let i = rows; i <= rows + 20; i++) {
       this.elements.push({ id: i.toString(), codigo: 'codigo ' + i, descricao: 'descricao ' + i, preco: 'preco ' + i });
     }
 
@@ -161,6 +162,28 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
     if (this.searchText) {
       this.elements = this.tableService.searchLocalDataBy(this.searchText);
       this.tableService.setDataSource(prev);
+    }
+
+    this.mdbPagination.calculateFirstItemIndex();
+    this.mdbPagination.calculateLastItemIndex();
+
+    this.tableService.searchDataObservable(this.searchText).subscribe((data: any) => {
+      if (data.length === 0) {
+        this.firstItemIndex = 0;
+      }
+
+    });
+  }
+
+  filtraBusca() {
+    let filter = [];
+    filter = this.elements
+        .filter(e => e.descricao.includes(this.searchText) || e.preco.includes(this.searchText))
+        .sort((a, b) => a.descricao.includes(this.searchText) && !b.descricao.includes(this.searchText) ?
+           -1 : b.preco.includes(this.searchText) && !a.preco.includes(this.searchText) ? 1 : 0);
+
+    if (filter.length > 0) {
+      this.elements = filter;
     }
 
     this.mdbPagination.calculateFirstItemIndex();

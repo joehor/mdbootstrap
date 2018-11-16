@@ -12,8 +12,12 @@ export class MeuPaginadorComponent implements OnInit {
   data;
   dataHead;
   dataPag;
+  pageNumber = [];
+  pageLinhas;
   gotopag = 1;
   orderVet = 1;
+  orderHead = '';
+  searchText = '';
 
 
   constructor(
@@ -28,31 +32,33 @@ export class MeuPaginadorComponent implements OnInit {
         this.jsonPaginatorService.dataSource.setDataSource(data);
         this.dataHead = this.jsonPaginatorService.dataSource.columnHeaders;
         this.dataPag = this.jsonPaginatorService.dataSource.getSlice(1);
+        for (let i = 1; i <= this.jsonPaginatorService.dataSource.paginaTotal; i++) {
+          this.pageNumber.push(i);
+         }
       });
   }
 
   btnNext() {
     console.log('Next...');
     this.dataPag = this.jsonPaginatorService.dataSource.goNext();
-    console.log('dataPag: ' + this.dataPag);
+    this.gotopag = this.jsonPaginatorService.dataSource.paginaAtual;
   }
 
   btnPrev() {
     console.log('Prior...');
     this.dataPag = this.jsonPaginatorService.dataSource.goPrior();
-    console.log('dataPag: ' + this.dataPag);
+    this.gotopag = this.jsonPaginatorService.dataSource.paginaAtual;
   }
 
-  btnSlice() {
-    console.log('o que tem em dataSource? ' + this.jsonPaginatorService.dataSource.data);
-    console.log('Slice...');
+  btnSlice(nPage) {
+    if (nPage > 0) { this.gotopag = nPage; }
     this.dataPag = this.jsonPaginatorService.dataSource.getSlice(this.gotopag);
-    console.log('dataPag: ' + this.dataPag);
   }
 
   tbhOrdenar(nomeCol) {
     console.log('Ordenando...');
     let vet;
+    this.orderHead = nomeCol;
     if (this.orderVet === 1) {
       vet = -1;
     } else {
@@ -61,6 +67,10 @@ export class MeuPaginadorComponent implements OnInit {
     this.orderVet = vet;
     this.data = this.jsonPaginatorService.dataSource.ordenar(this.data, nomeCol, vet);
     this.dataPag = this.data.slice(0, this.jsonPaginatorService.dataSource.linhasPorPagina);
+  }
+
+  searchItems() {
+    this.dataPag = this.jsonPaginatorService.dataSource.encontrar(this.searchText, 'descricao');
   }
 
 }

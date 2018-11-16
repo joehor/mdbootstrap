@@ -1,10 +1,22 @@
-<div class="container">
+<div class="container" style="margin: 5px;">
+  <div class="row">
+    <div class="md-form">
+      <div class="input-group">
+        <i class="fa fa-search fa-fw"></i>
+        <input mdbInputDirective type="text" class="form-control" [(ngModel)]="searchText" (keyup)="searchItems()">
+      </div>
+    </div>
+  </div>
   <div class="row">
     <table mdbTable>
       <thead>
         <tr>
           <th *ngFor="let head of dataHead" scope="col"
-            (click)="tbhOrdenar(head)">{{head}} </th>
+            (click)="tbhOrdenar(head)">{{ head }}
+            <i class="fa fa-sort" *ngIf="orderHead!=(head)"></i>
+            <i class="fa fa-sort-asc" *ngIf="((orderHead===(head)) && (orderVet>0))"></i>
+            <i class="fa fa-sort-desc" *ngIf="((orderHead===(head)) && (orderVet<0))"></i>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -18,9 +30,26 @@
     </table>
   </div>
   <div class="row">
-    <button class="btn btn-primary" (click)="btnPrev()">Prior</button>
-    <button class="btn btn-primary" (click)="btnNext()">Next</button>
-    <input mdbInputDirective type="text" class="form-control" [(ngModel)]="gotopag"/>
-    <button class="btn btn-success" (click)="btnSlice()">Parte</button>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination pg-blue">
+        <li class="page-item" [ngClass]="{'disabled': gotopag===1}">
+          <a class="page-link" mdbWavesEffect (click)="btnPrev()">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span></a>
+        </li>
+        <li class="page-item" *ngFor="let pag of pageNumber" [ngClass]="{'active': gotopag===(pag)}">
+          <a class="page-link" mdbWavesEffect (click)="btnSlice((pag))"> {{ pag }} </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled': gotopag===pageNumber.length}">
+          <a class="page-link" mdbWavesEffect (click)="btnNext()">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span></a>
+        </li>
+      </ul>
+    </nav>
   </div>
+  <div class="row">
+    Total de páginas: {{ pageNumber.length }}
+  </div>
+
 </div>
