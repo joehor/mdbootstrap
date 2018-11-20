@@ -36,22 +36,37 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     console.log('ngOnInit INI');
     // this.getTabela(1);
-    this.getTabelaTeste();
+    // this.getTabelaTeste();
+
+    let rows = 1;
+    if (this.elements) {
+     rows = this.elements.length + 1;
+    }
+
+    for (let i = rows; i <= rows + 20; i++) {
+      this.elements.push({ id: i.toString(), codigo: 'codigo ' + i, descricao: 'descricao ' + i, preco: 'preco ' + i });
+    }
+    this.tableService.setDataSource(this.elements);
+    this.elements = this.tableService.getDataSource();
+    this.previous = this.tableService.getDataSource();
+
     console.log('ngOnInit FIM');
   }
 
   ngAfterViewInit() {
     console.log('ngAfterViewInit');
-    if (this.elements.length > 0) {
-      console.log('ngAfterViewInit - tem registros...');
-      this.mdbPagination.setMaxVisibleItemsNumberTo(3);
-      this.firstItemIndex = this.mdbPagination.firstItemIndex;
-      this.lastItemIndex = this.mdbPagination.lastItemIndex;
+    // if (this.elements.length > 0) {
+    //  console.log('ngAfterViewInit - tem registros...');
+    //  this.definePagina();
+    // }
 
-      this.mdbPagination.calculateFirstItemIndex();
-      this.mdbPagination.calculateLastItemIndex();
-      // this.cdRef.detectChanges();
-    }
+    this.mdbPagination.setMaxVisibleItemsNumberTo(3);
+    this.firstItemIndex = this.mdbPagination.firstItemIndex;
+    this.lastItemIndex = this.mdbPagination.lastItemIndex;
+
+    this.mdbPagination.calculateFirstItemIndex();
+    this.mdbPagination.calculateLastItemIndex();
+    this.cdRef.detectChanges();
   }
 
   definePagina() {
@@ -65,22 +80,20 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
     this.cdRef.detectChanges();
   }
 
-  getTabela(id) {
+  async getTabela(id) {
     console.log('Inicio getTabela');
-    for (let i = 1; i <= 1; i++) {
-      this.tabelaListService.getTabela(1)
+    await this.tabelaListService.getTabela(1)
       .subscribe(data => {
-        console.log('result getTabela: ' + JSON.stringify(data));
-        this.elements = data;
-        this.headElements = Object.keys(this.elements[0]);
-        this.tableService.setDataSource(this.elements);
-        this.elements = this.tableService.getDataSource();
-        this.previous = this.tableService.getDataSource();
-        console.log('Fim getTabela');
+      console.log('result getTabela: ' + JSON.stringify(data));
+      this.elements = data;
+      this.headElements = Object.keys(this.elements[0]);
+      this.tableService.setDataSource(this.elements);
+      this.elements = this.tableService.getDataSource();
+      this.previous = this.tableService.getDataSource();
+      console.log('Fim getTabela');
 
-        this.definePagina();
-      });
-    }
+      this.definePagina();
+    });
   }
 
   getTabelaTeste() {
@@ -90,7 +103,7 @@ export class TabelaListComponent implements OnInit, AfterViewInit {
       this.elements.push({ id: i.toString(), codigo: 'codigo ' + i, descricao: 'descricao ' + i, preco: 'preco ' + i });
     }
 
-    this.headElements = Object.keys(this.elements[0]);
+    // this.headElements = Object.keys(this.elements[0]);
     this.tableService.setDataSource(this.elements);
     this.elements = this.tableService.getDataSource();
     this.previous = this.tableService.getDataSource();

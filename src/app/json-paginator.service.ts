@@ -11,6 +11,7 @@ export class JsonPaginatorService {
 
   dataSource = {
     data: [],
+    displayData: [],
     paginaAtual: 1,
     paginaTotal: 1,
     linhasPorPagina: 3,
@@ -18,23 +19,26 @@ export class JsonPaginatorService {
 
     setDataSource: (arr) => {
       this.dataSource.data = arr;
+      this.dataSource.displayData = arr;
       this.dataSource.columnHeaders = Object.keys(arr[0]);
       this.dataSource.setPaginas();
     },
 
     setPaginas: () => {
-      if (this.dataSource.data.length > 0) {
-        this.dataSource.paginaTotal = Math.ceil(this.dataSource.data.length / this.dataSource.linhasPorPagina);
+      if (this.dataSource.displayData.length > 0) {
+        this.dataSource.paginaTotal = Math.ceil(this.dataSource.displayData.length / this.dataSource.linhasPorPagina);
       }
 
     },
 
     getSlice: (pag) => {
       this.dataSource.paginaAtual = pag;
-      return this.dataSource.data.slice((pag - 1) * this.dataSource.linhasPorPagina, pag * this.dataSource.linhasPorPagina);
+      return (this.dataSource.data.slice((pag - 1)
+        * this.dataSource.linhasPorPagina, pag
+        * this.dataSource.linhasPorPagina));
     },
 
-    goNext: () => {
+    goNext() {
       let page = this.dataSource.paginaAtual + 1;
       if (page > this.dataSource.paginaTotal) {
         page--;
@@ -42,7 +46,7 @@ export class JsonPaginatorService {
       return this.dataSource.getSlice(page);
     },
 
-    goPrior: () => {
+    goPrior() {
       let page = this.dataSource.paginaAtual - 1;
       if (this.dataSource.paginaAtual < 1) {
         page++;
@@ -71,7 +75,7 @@ export class JsonPaginatorService {
       }
 
       if (text) {
-        return this.data.filter(el => {
+        this.dataSource.displayData = this.data.filter(el => {
           for (const k of aCols) {
             // campos numéricos não tem função search, nem convertendo para string ...
             if (typeof(el[k]) === 'string') {
@@ -82,8 +86,11 @@ export class JsonPaginatorService {
           }
         })
         .splice(0, this.linhasPorPagina);
+        return this.dataSource.displayData;
       } else {
-        return this.data.splice(0, this.linhasPorPagina);
+        this.dataSource.displayData = this.data.splice(0, this.linhasPorPagina);
+        this.setPaginas();
+        return this.dataSource.displayData;
       }
     }
 

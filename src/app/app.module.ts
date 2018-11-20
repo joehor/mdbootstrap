@@ -13,13 +13,15 @@ import { NavbarModule, WavesModule, ButtonsModule } from 'angular-bootstrap-md';
 import { TabelaListComponent } from './tabela-list/tabela-list.component';
 import { LinhasListComponent } from './linhas-list/linhas-list.component';
 import { MeuPaginadorComponent } from './meu-paginador/meu-paginador.component';
+import { TabelaExemploComponent } from './tabela-exemplo/tabela-exemplo.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TabelaListComponent,
     LinhasListComponent,
-    MeuPaginadorComponent
+    MeuPaginadorComponent,
+    TabelaExemploComponent
   ],
   imports: [
     BrowserModule,
